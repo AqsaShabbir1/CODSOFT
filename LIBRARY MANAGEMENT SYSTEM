@@ -1,0 +1,395 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+using namespace std;
+
+int main(){
+    //help option
+    cout << "Welcome to Library Management System!\n";
+    cout << "This system allows you to manage books in a library.\n";
+    cout << "You can add, view, search, delete and update books.\n";
+    cout << "You can also lend books and keep track of the return date.\n";
+    cout << "Penalty will be charged if the book is not returned on time.\n";
+    cout << "You can choose from Admin or User options from the main menu.\n";
+    cout << "If you choose Admin, you will be asked for your ID and password.\n";
+    cout << "You can exit or go back in all menus by choosing the appropriate option.\n";
+    cout << "\n\n";
+
+    //main menu
+    cout << "Main Menu\n";
+    cout << "1. Admin\n";
+    cout << "2. User\n";
+    cout << "3. Help\n";
+    cout << "4. Exit\n\n";
+    cout << "Please choose an option: ";
+    int option;
+    cin >> option;
+
+    //admin menu
+    if(option == 1){
+        string id, password;
+        cout << "\nPlease enter your ID: ";
+        cin >> id;
+        cout << "\nPlease enter your password: ";
+        cin >> password;
+        if(id == "admin" && password == "admin123"){
+            cout << "\nAdmin Menu\n";
+            cout << "1. Add Book\n";
+            cout << "2. View Book\n";
+            cout << "3. Search Book\n";
+            cout << "4. Delete Book\n";
+            cout << "5. Update Book\n";
+            cout << "6. Exit\n\n";
+            cout << "Please choose an option: ";
+            int adminOption;
+            cin >> adminOption;
+
+            //add book
+            if(adminOption == 1){
+                string bookName, authorName;
+                int bookID;
+                cout << "\nPlease enter the book name: ";
+                cin >> bookName;
+                cout << "\nPlease enter the author name: ";
+                cin >> authorName;
+                cout << "\nPlease enter the book ID: ";
+                cin >> bookID;
+                ofstream outfile;
+                outfile.open("BookData.txt", ios::app);
+                outfile << bookID << "," << bookName << "," << authorName << endl;
+                outfile.close();
+                cout << "\nBook has been added successfully!\n\n";
+                main();
+            }
+
+            //view book
+            else if(adminOption == 2){
+                ifstream infile;
+                infile.open("BookData.txt");
+                string data;
+                cout << "\nBook Name" << "\t" << "Author Name" << "\t" << "Book ID" << endl;
+                while(getline(infile, data)){
+                    int i;
+                    string bookName, authorName;
+                    int bookID;
+                    for(i = 0; data[i] != ','; i++){
+                        bookID = bookID * 10 + (data[i] - '0');
+                    }
+                    for(i = i + 1; data[i] != ','; i++){
+                        bookName += data[i];
+                    }
+                    for(i = i + 1; data[i] != '\0'; i++){
+                        authorName += data[i];
+                    }
+                    cout << bookName << "\t" << authorName << "\t" << bookID << endl;
+                }
+                infile.close();
+                cout << "\n";
+                main();
+            }
+
+            //search book
+            else if(adminOption == 3){
+                ifstream infile;
+                infile.open("BookData.txt");
+                string data;
+                int searchID;
+                cout << "\nPlease enter the Book ID to search: ";
+                cin >> searchID;
+                cout << "\nBook Name" << "\t" << "Author Name" << "\t" << "Book ID" << endl;
+                while(getline(infile, data)){
+                    int i;
+                    string bookName, authorName;
+                    int bookID;
+                    for(i = 0; data[i] != ','; i++){
+                        bookID = bookID * 10 + (data[i] - '0');
+                    }
+                    for(i = i + 1; data[i] != ','; i++){
+                        bookName += data[i];
+                    }
+                    for(i = i + 1; data[i] != '\0'; i++){
+                        authorName += data[i];
+                    }
+                    if(bookID == searchID){
+                        cout << bookName << "\t" << authorName << "\t" << bookID << endl;
+                    }
+                }
+                infile.close();
+                cout << "\n";
+                main();
+            }
+
+            //delete book
+            else if(adminOption == 4){
+                ifstream infile;
+                infile.open("BookData.txt");
+                string data;
+                int deleteID;
+                cout << "\nPlease enter the Book ID to delete: ";
+                cin >> deleteID;
+                ofstream tempFile;
+                tempFile.open("temp.txt");
+                while(getline(infile, data)){
+                    int i;
+                    string bookName, authorName;
+                    int bookID;
+                    for(i = 0; data[i] != ','; i++){
+                        bookID = bookID * 10 + (data[i] - '0');
+                    }
+                    for(i = i + 1; data[i] != ','; i++){
+                        bookName += data[i];
+                    }
+                    for(i = i + 1; data[i] != '\0'; i++){
+                        authorName += data[i];
+                    }
+                    if(bookID != deleteID){
+                        tempFile << bookID << "," << bookName << "," << authorName << endl;
+                    }
+                }
+                infile.close();
+                tempFile.close();
+                remove("BookData.txt");
+                rename("temp.txt", "BookData.txt");
+                cout << "\nBook has been deleted successfully!\n\n";
+                main();
+            }
+
+            //update book
+            else if(adminOption == 5){
+                ifstream infile;
+                infile.open("BookData.txt");
+                string data;
+                int updateID;
+                cout << "\nPlease enter the Book ID to update: ";
+                cin >> updateID;
+                ofstream tempFile;
+                tempFile.open("temp.txt");
+                while(getline(infile, data)){
+                    int i;
+                    string bookName, authorName;
+                    int bookID;
+                    for(i = 0; data[i] != ','; i++){
+                        bookID = bookID * 10 + (data[i] - '0');
+                    }
+                    for(i = i + 1; data[i] != ','; i++){
+                        bookName += data[i];
+                    }
+                    for(i = i + 1; data[i] != '\0'; i++){
+                        authorName += data[i];
+                    }
+                    if(bookID == updateID){
+                        cout << "\nPlease enter the book name: ";
+                        cin >> bookName;
+                        cout << "\nPlease enter the author name: ";
+                        cin >> authorName;
+                        tempFile << bookID << "," << bookName << "," << authorName << endl;
+                    }
+                    else{
+                        tempFile << bookID << "," << bookName << "," << authorName << endl;
+                    }
+                }
+                infile.close();
+                tempFile.close();
+                remove("BookData.txt");
+                rename("temp.txt", "BookData.txt");
+                cout << "\nBook has been updated successfully!\n\n";
+                main();
+            }
+
+            //exit
+            else if(adminOption == 6){
+                return 0;
+            }
+
+            //invalid option
+            else{
+                cout << "\nInvalid option!\n\n";
+                main();
+            }
+        }
+        //invalid id or password
+        else{
+            cout << "\nInvalid ID or password!\n\n";
+            main();
+        }
+    }
+
+    //user menu
+    else if(option == 2){
+        cout << "\nUser Menu\n";
+        cout << "1. Lend Book\n";
+        cout << "2. Return Book\n";
+        cout << "3. View Book\n";
+        cout << "4. Search Book\n";
+        cout << "5. Exit\n\n";
+        cout << "Please choose an option: ";
+        int userOption;
+        cin >> userOption;
+
+        //lend book
+        if(userOption == 1){
+            ifstream infile;
+            infile.open("BookData.txt");
+            string data;
+            int lendID;
+            cout << "\nPlease enter the Book ID to lend: ";
+            cin >> lendID;
+            cout << "\nBook Name" << "\t" << "Author Name" << "\t" << "Book ID" << endl;
+            while(getline(infile, data)){
+                int i;
+                string bookName, authorName;
+                int bookID;
+                for(i = 0; data[i] != ','; i++){
+                    bookID = bookID * 10 + (data[i] - '0');
+                }
+                for(i = i + 1; data[i] != ','; i++){
+                    bookName += data[i];
+                }
+                for(i = i + 1; data[i] != '\0'; i++){
+                    authorName += data[i];
+                }
+                if(bookID == lendID){
+                    cout << bookName << "\t" << authorName << "\t" << bookID << endl;
+                    ofstream outfile;
+                    outfile.open("LendData.txt", ios::app);
+                    outfile << bookID << "," << bookName << "," << authorName << endl;
+                    outfile.close();
+                    cout << "\nBook has been lent successfully!\n\n";
+                }
+            }
+            infile.close();
+            cout << "\n";
+            main();
+        }
+
+        //return book
+        else if(userOption == 2){
+            ifstream infile;
+            infile.open("LendData.txt");
+            string data;
+            int returnID;
+            cout << "\nPlease enter the Book ID to return: ";
+            cin >> returnID;
+            cout << "\nBook Name" << "\t" << "Author Name" << "\t" << "Book ID" << endl;
+            while(getline(infile, data)){
+                int i;
+                string bookName, authorName;
+                int bookID;
+                for(i = 0; data[i] != ','; i++){
+                    bookID = bookID * 10 + (data[i] - '0');
+                }
+                for(i = i + 1; data[i] != ','; i++){
+                    bookName += data[i];
+                }
+                for(i = i + 1; data[i] != '\0'; i++){
+                    authorName += data[i];
+                }
+                if(bookID == returnID){
+                    cout << bookName << "\t" << authorName << "\t" << bookID << endl;
+                    ofstream outfile;
+                    outfile.open("ReturnData.txt", ios::app);
+                    outfile << bookID << "," << bookName << "," << authorName << endl;
+                    outfile.close();
+                    cout << "\nBook has been returned successfully!\n\n";
+                }
+            }
+            infile.close();
+            cout << "\n";
+            main();
+        }
+
+        //view book
+        else if(userOption == 3){
+            ifstream infile;
+            infile.open("BookData.txt");
+            string data;
+            cout << "\nBook Name" << "\t" << "Author Name" << "\t" << "Book ID" << endl;
+            while(getline(infile, data)){
+                int i;
+                string bookName, authorName;
+                int bookID;
+                for(i = 0; data[i] != ','; i++){
+                    bookID = bookID * 10 + (data[i] - '0');
+                }
+                for(i = i + 1; data[i] != ','; i++){
+                    bookName += data[i];
+                }
+                for(i = i + 1; data[i] != '\0'; i++){
+                    authorName += data[i];
+                }
+                cout << bookName << "\t" << authorName << "\t" << bookID << endl;
+            }
+            infile.close();
+            cout << "\n";
+            main();
+        }
+
+        //search book
+        else if(userOption == 4){
+            ifstream infile;
+            infile.open("BookData.txt");
+            string data;
+            int searchID;
+            cout << "\nPlease enter the Book ID to search: ";
+            cin >> searchID;
+            cout << "\nBook Name" << "\t" << "Author Name" << "\t" << "Book ID" << endl;
+            while(getline(infile, data)){
+                int i;
+                string bookName, authorName;
+                int bookID;
+                for(i = 0; data[i] != ','; i++){
+                    bookID = bookID * 10 + (data[i] - '0');
+                }
+                for(i = i + 1; data[i] != ','; i++){
+                    bookName += data[i];
+                }
+                for(i = i + 1; data[i] != '\0'; i++){
+                    authorName += data[i];
+                }
+                if(bookID == searchID){
+                    cout << bookName << "\t" << authorName << "\t" << bookID << endl;
+                }
+            }
+            infile.close();
+            cout << "\n";
+            main();
+        }
+
+        //exit
+        else if(userOption == 5){
+            return 0;
+        }
+
+        //invalid option
+        else{
+            cout << "\nInvalid option!\n\n";
+            main();
+        }
+    }
+
+    //help option
+    else if(option == 3){
+        cout << "Welcome to Library Management System!\n";
+        cout << "This system allows you to manage books in a library.\n";
+        cout << "You can add, view, search, delete and update books.\n";
+          cout << "You can also lend books and keep track of the return date.\n";
+        cout << "Penalty will be charged if the book is not returned on time.\n";
+        cout << "You can choose from Admin or User options from the main menu.\n";
+        cout << "If you choose Admin, you will be asked for your ID and password.\n";
+        cout << "You can exit or go back in all menus by choosing the appropriate option.\n";
+        cout << "\n\n";
+        main();
+    }
+
+    //exit
+    else if(option == 4){
+        return 0;
+    }
+
+    //invalid option
+    else{
+        cout << "\nInvalid option!\n\n";
+        main();
+    }
+}
+
