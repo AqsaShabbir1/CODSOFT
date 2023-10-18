@@ -1,0 +1,35 @@
+#include <iostream>
+using namespace std;
+
+int main()
+{
+  int a,b;
+  cout<<" CALCULATOR BY AQSA SHABBIR."<<endl;
+  cout<<" gmail aqsyshabbir@gmail.com"<<endl;
+  cout<< "Enter the first number:";
+  cin>>a;
+  cout<< "Enter the second number:";
+  cin>>b;
+  
+  char c;
+  cout<< "enter the operator which you want to perform:";
+  cin>>c;
+  switch (c)
+  {
+    case'/':
+      cout<<a<<c<<b<<" is "<<(a/b);
+      break;
+     case '-': 
+      cout<<a<<c<<b<<" is "<<(a-b);
+      break;
+     case'*':
+     cout<<a<<c<<b<<" is "<<(a*b);
+     break;
+     case '+':
+     cout<<a<<c<<b<<" is "<<(a+b);
+     break;
+     default:
+     cout<<"The operator is incorrect.";
+  }
+  return 0;
+}
